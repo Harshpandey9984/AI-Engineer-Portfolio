@@ -1,0 +1,879 @@
+@import "tailwindcss";
+
+/* CSS Houdini property for smooth conic border rotation */
+@property --ang {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ============================================================
+   1. THEME TOKENS — LIGHT, DARK & PREFERS-COLOR-SCHEME
+   ============================================================ */
+:root {
+  --bg: #F5F7FB;
+  --surface: #FFFFFF;
+  --surface2: #EAEFFA;
+  --line: #D9E0EC;
+  --text: #101A2E;
+  --muted: #55627A;
+  --accent: #2B45E6;
+  --accent-ink: #FFFFFF;
+  --hot: #0F766E;
+  --glow: rgba(43, 69, 230, 0.12);
+  --shadow: rgba(16, 26, 46, 0.30);
+  color-scheme: light;
+
+  /* Font mappings */
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Sora', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Pointer coordinates for project panel reactive glow */
+  --mx: 50%;
+  --my: 50%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1020;
+    --surface: #121A2E;
+    --surface2: #1A2440;
+    --line: #243049;
+    --text: #E6ECF8;
+    --muted: #93A1BD;
+    --accent: #8FA8FF;
+    --accent-ink: #0A1020;
+    --hot: #5EEAD4;
+    --glow: rgba(143, 168, 255, 0.16);
+    --shadow: rgba(0, 0, 0, 0.60);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0A1020;
+  --surface: #121A2E;
+  --surface2: #1A2440;
+  --line: #243049;
+  --text: #E6ECF8;
+  --muted: #93A1BD;
+  --accent: #8FA8FF;
+  --accent-ink: #0A1020;
+  --hot: #5EEAD4;
+  --glow: rgba(143, 168, 255, 0.16);
+  --shadow: rgba(0, 0, 0, 0.60);
+  color-scheme: dark;
+}
+
+/* Smooth fade transition class applied on theme toggle for 450ms */
+.tx, .tx * {
+  transition: background-color 0.35s, color 0.35s, border-color 0.35s, box-shadow 0.35s !important;
+}
+
+/* ============================================================
+   2. TYPOGRAPHY & BASE STYLES
+   ============================================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--bg);
+    color: var(--text);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.65;
+    background-color: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+    color: var(--text);
+  }
+
+  h1 {
+    font-size: clamp(34px, 5vw, 56px);
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: clamp(28px, 3.8vw, 40px);
+    font-weight: 700;
+  }
+
+  .card-title {
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .skill-title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .timeline-title {
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--accent) 25%, transparent);
+    color: var(--text);
+  }
+}
+
+/* ============================================================
+   3. ACCESSIBILITY, FOCUS & RESPONSIVE CONTAINERS
+   ============================================================ */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Centered container with responsive padding preventing edge sticking */
+.container-portfolio {
+  width: 100%;
+  max-width: 1220px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-padding {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .section-padding {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .section-padding {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* ============================================================
+   4. HEADER, SAFE-AREAS & PROGRESS BAR
+   ============================================================ */
+.safe-area-strip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background-color: var(--bg);
+  z-index: 60;
+}
+
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  height: 62px;
+  background-color: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  z-index: 50;
+}
+
+.nav-link {
+  color: var(--muted);
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 4px;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--text);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after, .nav-link.active::after {
+  transform: scaleX(1);
+}
+
+.scroll-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--hot) 100%);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* ============================================================
+   5. THEME SWITCH PILL (62x32)
+   ============================================================ */
+.theme-switch-pill {
+  width: 62px;
+  height: 32px;
+  border-radius: 9999px;
+  background-color: var(--surface2);
+  border: 1px solid var(--line);
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+}
+
+.theme-switch-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.5, 1.6, 0.4, 1);
+  box-shadow: 0 2px 6px var(--shadow);
+}
+
+:root[data-theme="dark"] .theme-switch-knob,
+.dark .theme-switch-knob {
+  transform: translateX(30px);
+}
+
+.switch-icon {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.switch-icon-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+  transition: opacity 0.25s ease, transform 0.4s ease;
+}
+
+:root[data-theme="dark"] .switch-icon-sun,
+.dark .switch-icon-sun {
+  opacity: 0;
+  transform: rotate(60deg) scale(0.5);
+  pointer-events: none;
+}
+
+.switch-icon-moon {
+  opacity: 0;
+  transform: rotate(-60deg) scale(0.5);
+  transition: opacity 0.25s ease, transform 0.4s ease;
+}
+
+:root[data-theme="dark"] .switch-icon-moon,
+.dark .switch-icon-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* ============================================================
+   6. HERO SECTION & WORD-BY-WORD HEADLINE
+   ============================================================ */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 52px;
+  padding: 80px 0 70px;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 44px;
+    padding: 60px 0 50px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-grid {
+    gap: 32px;
+    padding: 40px 0 40px;
+  }
+}
+
+.hero-glow-1 {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(760px 380px at 82% 8%, var(--glow), transparent 70%),
+    radial-gradient(520px 300px at 8% 100%, color-mix(in srgb, var(--hot) 10%, transparent), transparent 70%);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+  background-color: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-radius: 9999px;
+  padding: 6px 14px;
+}
+
+.hero-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* Masked word slide-up */
+.w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.1em;
+  margin-right: 0.24em;
+}
+
+.w > span {
+  display: inline-block;
+  transform: translateY(112%);
+  animation: wordReveal 0.8s cubic-bezier(0.2, 0.85, 0.2, 1) forwards;
+}
+
+@keyframes wordReveal {
+  to { transform: translateY(0%); }
+}
+
+.w.accent-word > span {
+  color: var(--accent);
+}
+
+/* Tag Pills */
+.tag-pill {
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 14px;
+  color: var(--accent);
+  background-color: color-mix(in srgb, var(--accent) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.tag-pill.hot-pill {
+  color: var(--hot);
+  background-color: color-mix(in srgb, var(--hot) 7%, transparent);
+  border-color: color-mix(in srgb, var(--hot) 20%, transparent);
+}
+
+/* Buttons with sweep */
+.btn-portfolio {
+  border-radius: 12px;
+  padding: 13px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-portfolio:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.btn-portfolio-primary {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent);
+  box-shadow: 0 4px 18px var(--glow);
+}
+
+.btn-portfolio-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+
+.btn-portfolio-primary:hover::after {
+  left: 130%;
+}
+
+.btn-portfolio-secondary {
+  background-color: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.btn-portfolio-secondary:hover {
+  background-color: var(--surface2);
+  border-color: var(--accent);
+}
+
+/* ============================================================
+   7. TERMINAL PANEL WITH CONIC ROTATING BORDER
+   ============================================================ */
+@keyframes spinAng {
+  to { --ang: 360deg; }
+}
+
+.terminal-wrapper {
+  padding: 1.5px;
+  border-radius: 16px;
+  background: conic-gradient(from var(--ang), var(--accent), var(--hot), var(--accent));
+  animation: spinAng 7s linear infinite;
+  box-shadow: 0 30px 60px -30px var(--shadow);
+}
+
+.terminal-inner {
+  background-color: var(--surface);
+  border-radius: 15px;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--text);
+  overflow: hidden;
+}
+
+.terminal-title-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  background-color: var(--surface2);
+}
+
+.terminal-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--line);
+}
+
+.terminal-line {
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.terminal-line.show-line {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ============================================================
+   8. TOOL MARQUEE
+   ============================================================ */
+.tool-marquee-band {
+  background-color: var(--surface);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+@keyframes marqueeSlide {
+  to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: marqueeSlide 38s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.marquee-pill {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  background-color: var(--surface2);
+  border-radius: 9999px;
+  padding: 6px 16px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   9. SCROLL REVEAL (.rv & .in)
+   ============================================================ */
+.rv {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--d, 0) * 90ms);
+}
+
+.rv.in, .rv.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   10. PROJECT PANELS & INTERACTIVE GLOW
+   ============================================================ */
+.project-panel {
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background-color: var(--surface);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.project-panel:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 16px 36px -12px var(--shadow);
+}
+
+.project-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(380px circle at var(--mx) var(--my), var(--glow), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 1;
+}
+
+.project-panel:hover::before {
+  opacity: 1;
+}
+
+/* Container for SVG Thumbnails */
+.thumb {
+  position: relative;
+  aspect-ratio: 16/10;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  background-color: var(--surface2);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.55;
+  -webkit-mask-image: radial-gradient(circle, black 25%, transparent 78%);
+  mask-image: radial-gradient(circle, black 25%, transparent 78%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.thumb-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--hot);
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  padding: 2px 10px;
+  z-index: 3;
+}
+
+.thumb svg {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.project-panel:hover .thumb svg {
+  transform: scale(1.05);
+}
+
+/* SVG Colour Utility Classes */
+.fa { fill: var(--accent); }
+.sa { stroke: var(--accent); }
+.fh { fill: var(--hot); }
+.sh { stroke: var(--hot); }
+.fm { fill: var(--muted); }
+.sm { stroke: var(--muted); }
+.fs { fill: var(--surface); }
+.sl { stroke: var(--line); }
+
+/* SVG Animation Keyframes */
+@keyframes dashAnim {
+  to { stroke-dashoffset: -20; }
+}
+
+@keyframes plsAnim {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.7); opacity: 1; }
+}
+
+@keyframes hlAnim {
+  0%, 100% { opacity: 0.25; }
+  40%, 60% { opacity: 1; }
+}
+
+@keyframes orbitAnim {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes nodeonAnim {
+  0%, 32%, 100% { stroke: var(--line); }
+  6%, 22% { stroke: var(--accent); }
+}
+
+@keyframes growAnim {
+  0%, 10% { transform: scaleY(0.06); }
+  42%, 86% { transform: scaleY(1); }
+  100% { transform: scaleY(0.06); }
+}
+
+@keyframes scanAnim {
+  from { transform: translateX(0); }
+  to { transform: translateX(240px); }
+}
+
+@keyframes tickAnim {
+  0%, 48% { stroke-dashoffset: 24; opacity: 0; }
+  58%, 86% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 24; opacity: 0; }
+}
+
+.anim-dash {
+  stroke-dasharray: 4 6;
+  animation: dashAnim 1.2s linear infinite;
+}
+
+.anim-pls {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: plsAnim 2.2s ease-in-out infinite;
+  animation-delay: var(--dl, 0s);
+}
+
+.anim-hl {
+  animation: hlAnim 3.2s ease-in-out infinite;
+  animation-delay: var(--dl, 0s);
+}
+
+.anim-orbit {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: orbitAnim 16s linear infinite;
+}
+
+.anim-nodeon {
+  animation: nodeonAnim 4s ease-in-out infinite;
+  animation-delay: var(--dl, 0s);
+}
+
+.anim-grow {
+  transform-origin: bottom;
+  animation: growAnim 5s cubic-bezier(0.3, 0.8, 0.3, 1) infinite;
+  animation-delay: calc(var(--i, 0) * 0.14s);
+}
+
+.anim-scan {
+  animation: scanAnim 5s linear infinite;
+}
+
+.anim-tick {
+  stroke-dasharray: 24;
+  animation: tickAnim 5s ease-in-out infinite;
+}
+
+/* ============================================================
+   11. SKILL CHIPS, TIMELINE & CONTACT
+   ============================================================ */
+.skill-chip {
+  border-radius: 9999px;
+  background-color: var(--surface2);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.skill-chip:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.timeline-line {
+  position: absolute;
+  top: 10px;
+  bottom: 0;
+  left: 6px;
+  width: 2px;
+  background-color: var(--line);
+}
+
+.timeline-dot-item {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--surface);
+  border: 3px solid var(--accent);
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes pingPulse {
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.timeline-dot-first::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  animation: pingPulse 2.4s ease-out infinite;
+}
+
+.contact-card {
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+  padding: 36px;
+  box-shadow: 0 20px 40px -15px var(--shadow);
+}
+
+/* ============================================================
+   12. REDUCED MOTION PREFERENCES
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .w > span {
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .rv {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .terminal-wrapper {
+    animation: none !important;
+  }
+
+  .marquee-track {
+    animation: none !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+  }
+
+  .timeline-dot-first::after {
+    display: none !important;
+  }
+
+  .btn-portfolio-primary::after {
+    display: none !important;
+  }
+
+  .thumb svg {
+    transform: none !important;
+  }
+
+  .anim-dash, .anim-pls, .anim-hl, .anim-orbit, .anim-nodeon, .anim-grow, .anim-scan, .anim-tick {
+    animation: none !important;
+  }
+
+  .anim-grow {
+    transform: scaleY(1) !important;
+  }
+
+  .anim-tick {
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
+  }
+}

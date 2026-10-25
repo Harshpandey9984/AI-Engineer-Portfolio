@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Early Theme Script to prevent flash -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('theme');
+          var theme = saved;
+          if (!theme) {
+            theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+        } catch(e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+
+    <!-- Primary Meta -->
+    <title>Harsh Pandey | AI Engineer &amp; AI Product Developer</title>
+    <meta name="description" content="Explore Harsh Pandey's AI engineering portfolio, featuring AI agents, LLM applications, intelligent automation, and AI-powered software projects." />
+    <meta name="author" content="Harsh Pandey" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://harshpandey.tech" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Harsh Pandey | AI Engineer & AI Product Developer" />
+    <meta property="og:description" content="Explore Harsh Pandey's AI engineering portfolio, featuring AI agents, LLM applications, intelligent automation, and AI-powered software projects." />
+    <meta property="og:url" content="https://harshpandey.tech" />
+    <meta property="og:image" content="https://harshpandey.tech/og-image.png" />
+    <meta property="og:site_name" content="Harsh Pandey — AI Engineer" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Harsh Pandey | AI Engineer & AI Product Developer" />
+    <meta name="twitter:description" content="Explore Harsh Pandey's AI engineering portfolio, featuring AI agents, LLM applications, intelligent automation, and AI-powered software projects." />
+    <meta name="twitter:image" content="https://harshpandey.tech/og-image.png" />
+
+    <!-- Fonts: Sora, DM Sans, JetBrains Mono, Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Theme color -->
+    <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0B0F19" media="(prefers-color-scheme: dark)" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Harsh Pandey",
+      "url": "https://harshpandey.tech",
+      "jobTitle": "AI Engineer",
+      "sameAs": [
+        "https://github.com/Harshpandey9984",
+        "https://www.linkedin.com/in/harsh-pandey-aa783925a/"
+      ],
+      "knowsAbout": [
+        "Artificial Intelligence",
+        "AI Agents",
+        "Large Language Models",
+        "Intelligent Automation",
+        "Machine Learning",
+        "Full-Stack Development"
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
